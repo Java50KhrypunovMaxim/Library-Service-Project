@@ -20,14 +20,14 @@ class Book(models.Model):
 
 
 class Borrowing(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="borrowings")
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="borrowings")
     borrow_date = models.DateField(auto_now_add=True)
     expected_return_date = models.DateField()
     actual_return_date = models.DateField(null=True, blank=True)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user.email} borrowed {self.book.title}"
+        return f"{self.book.title} borrowed by {self.user.email}"
 
 
 class Payment(models.Model):
