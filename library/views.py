@@ -5,6 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from library.models import Book, Payment, Borrowing
+from library.permissions import IsAdminOrIfAuthenticatedReadOnly
 from library.serializer import BookSerializer, BookListSerializer, BookDetailSerializer, PaymentSerializer, \
     PaymentListSerializer, BorrowingSerializer, BorrowingListSerializer
 
