@@ -1,6 +1,5 @@
 from datetime import timezone
 import stripe
-from django.conf import settings
 
 from rest_framework import serializers
 from library.models import Book, Payment, Borrowing
@@ -57,7 +56,7 @@ class PaymentSerializer(serializers.ModelSerializer):
                     "product_data": {
                         "name": f"{payment_type} for borrowing {borrowing.id}",
                     },
-                    "unit_amount": int(money_to_pay * 100),  # Stripe принимает сумму в центах
+                    "unit_amount": int(money_to_pay * 100),
                 },
                 "quantity": 1,
             }],
