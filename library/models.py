@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.crypto import get_random_string
 
 User = get_user_model()
 
@@ -50,3 +51,29 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.type} - {self.money_to_pay}$ ({self.status})"
+
+    def save(self, *args, **kwargs):
+        borrowing = self.borrowing
+        borrow_date = borrowing.borrow_date
+        return_date = borrowing.actual_return_date or borrowing.expected_return_date
+        days = (return_date - borrow_date).days
+        if days == 0:
+            days = 1
+        daily_fee = borrowing.book.daily_fee
+        self.money_to_pay = daily_fee * days
+
+        # Генерация session_id и session_url, если их ещё нет
+        if not self.session_id:
+            self.session_id = get_random_string(length=32)
+        if not self.session_url:
+            self.session_url = f"https://fake-payment.com/session/{self.session_id}"
+
+        if borrowing.actual_return_date:
+            if borrowing.actual_return_date > borrowing.expected_return_date:
+                self.type = self.Type.FINE
+            else:
+                self.type = self.Type.PAYMENT
+        else:
+            self.type = self.Type.PAYMENT
+
+        super().save(*args, **kwargs)

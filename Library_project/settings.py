@@ -78,8 +78,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Library_project.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
@@ -88,9 +86,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -154,7 +149,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Cinema API",
+    "TITLE": "Library API",
     "DESCRIPTION": "API documentation for the cinema service",
     "VERSION": "1.0.0",
     'SERVE_INCLUDE_SCHEMA': False,
