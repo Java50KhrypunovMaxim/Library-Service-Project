@@ -10,4 +10,4 @@ router.register("borrowings", BorrowingViewSet)
 
 urlpatterns = [path("", include(router.urls))]
 
-app_name = "cinema"
+app_name = "library"

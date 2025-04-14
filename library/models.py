@@ -22,11 +22,15 @@ class Book(models.Model):
 
 
 class Borrowing(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="borrowings")
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="borrowings")
-    borrow_date = models.DateField(auto_now_add=True)
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             related_name="borrowings")
+    book = models.ForeignKey(Book,
+                             on_delete=models.CASCADE,
+                             related_name="borrowings")
+    borrow_date = models.DateField()
     expected_return_date = models.DateField()
-    actual_return_date = models.DateField(null=True, blank=True)
+    actual_return_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.book.title} borrowed by {self.user.email}"
@@ -42,9 +46,13 @@ class Payment(models.Model):
         PAYMENT = 'PAYMENT', 'Payment'
         FINE = 'FINE', 'Fine'
 
-    status = models.CharField(max_length=7, choices=Status.choices, default=Status.PENDING)
+    status = models.CharField(max_length=7,
+                              choices=Status.choices,
+                              default=Status.PENDING)
     type = models.CharField(max_length=7, choices=Type.choices)
-    borrowing = models.ForeignKey(Borrowing, on_delete=models.CASCADE, related_name="payments")
+    borrowing = models.ForeignKey(Borrowing,
+                                  on_delete=models.CASCADE,
+                                  related_name="payments")
     session_url = models.URLField(max_length=500)
     session_id = models.CharField(max_length=255)
     money_to_pay = models.DecimalField(max_digits=7, decimal_places=2)
@@ -55,18 +63,19 @@ class Payment(models.Model):
     def save(self, *args, **kwargs):
         borrowing = self.borrowing
         borrow_date = borrowing.borrow_date
-        return_date = borrowing.actual_return_date or borrowing.expected_return_date
+        return_date = (borrowing.actual_return_date
+                       or borrowing.expected_return_date)
         days = (return_date - borrow_date).days
         if days == 0:
             days = 1
         daily_fee = borrowing.book.daily_fee
         self.money_to_pay = daily_fee * days
 
-        # Генерация session_id и session_url, если их ещё нет
         if not self.session_id:
             self.session_id = get_random_string(length=32)
         if not self.session_url:
-            self.session_url = f"https://fake-payment.com/session/{self.session_id}"
+            self.session_url = \
+                f"https://fake-payment.com/session/{self.session_id}"
 
         if borrowing.actual_return_date:
             if borrowing.actual_return_date > borrowing.expected_return_date:
