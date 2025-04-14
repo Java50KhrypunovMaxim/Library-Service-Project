@@ -29,7 +29,6 @@ class BorrowingPagination(PageNumberPagination):
 
 
 class BookViewSet(ReadOnlyModelViewSet,
-                  mixins.CreateModelMixin,
                   GenericViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -56,7 +55,6 @@ class BookViewSet(ReadOnlyModelViewSet,
 
 
 class PaymentViewSet(mixins.ListModelMixin,
-                     mixins.CreateModelMixin,
                      viewsets.GenericViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
@@ -75,7 +73,6 @@ class PaymentViewSet(mixins.ListModelMixin,
 
 
 class BorrowingViewSet(mixins.ListModelMixin,
-                       mixins.CreateModelMixin,
                        mixins.RetrieveModelMixin,
                        GenericViewSet):
     queryset = Borrowing.objects.all()
