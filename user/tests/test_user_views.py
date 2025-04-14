@@ -32,7 +32,6 @@ def get_me_url():
     return reverse('user:manage')
 
 
-# Test for CreateUserView
 @pytest.mark.django_db
 def test_create_user(client):
     payload = {"email": f"new_{uuid.uuid4()}@example.com", "password": "testpass123"}
@@ -44,7 +43,6 @@ def test_create_user(client):
     assert 'password' not in response.data
 
 
-# Test for LoginUserView (valid credentials)
 @pytest.mark.django_db
 def test_login_user_valid(client):
     email = f"auth_{uuid.uuid4()}@example.com"
@@ -62,7 +60,6 @@ def test_login_user_valid(client):
     assert response.data['token']
 
 
-# Test for LoginUserView (invalid credentials)
 @pytest.mark.django_db
 def test_login_user_invalid(client):
     login_data = {
@@ -75,7 +72,6 @@ def test_login_user_invalid(client):
     assert 'token' not in response.data
 
 
-# Test for ManageUserView (authenticated user)
 @pytest.mark.django_db
 def test_manage_user_authenticated(client):
     email = f"auth_{uuid.uuid4()}@example.com"
@@ -96,7 +92,6 @@ def test_manage_user_authenticated(client):
     assert response.data['email'] == email
 
 
-# Test for ManageUserView (unauthenticated user)
 @pytest.mark.django_db
 def test_manage_user_unauthenticated(client):
     response = client.get(get_me_url(), format='json')
